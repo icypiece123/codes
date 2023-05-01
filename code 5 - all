@@ -82,42 +82,52 @@ printf("\nInvalid Expression\n");
 -------4th  count char, words, spaces, end of line --------------------------------------------------------------
 
 %{
- #include<stdio.h>
- int c=0, w=0, s=0, l=0;
+#include<stdio.h>
+int chars = 0, spaces = 0, endOfLines = 0, words = 0;
 %}
-WORD [^ \t\n,\.:]+
-EOL [\n]
-BLANK [ ]
+
 %%
-{WORD} {w++; c=c+yyleng;}
-{BLANK} {s++;}
-{EOL} {l++;}
-. {c++;}
+[ ] {spaces++;}
+[.] {chars++;}
+[a-zA-Z]{2,} {words++;}
+[\n] {endOfLines++;}
 %%
-int yywrap()
-{
+
+int yywrap() {
 return 1;
 }
-main(int argc, char *argv[])
-{
-        yyin=fopen(argv[1],"r");
-        yylex();
-        printf("No of characters=%d\nNo of words=%d\nNo of sspaces=%d\n No of lines=%d",c,w,s,l);
+main() {
+    printf("Enter String : ");
+    yylex();
+    printf("Chars : %d\n", chars);
+    printf("Spaces : %d\n", spaces);
+    printf("End of Lines : %d\n", endOfLines);
+    printf("Words : %d\n", words);
 }
 
 ------------------------5th  count identifier, keywords, operators, special symbols, digits------------------------------
 %{
 #include<stdio.h>
-int operator=0;
-int identifier=0;
-int special=0;
-int digit=0;
-int key=0;
+int operators = 0, special = 0, keywords = 0, identifier = 0, digits = 0;
 %}
+
 %%
-int|char|float|if|else|switch {key++;}
-[a-zA-Z] {identifier++;}
-[\+\-\*\=] {operator++;}
-[0-9] {digit++;}
-[\;\$\_\&\!] {special++;}
+(int|float|double|string) {keywords++;}
+[\-\+\*\/] {operators++;}
+[\$\:;\?] {special++;}
+[0-9]+ {digits++;}
+\s[_A-Za-z][a-zA-Z0-9]+ {identifier++;}
 %%
+
+int yywrap() {
+return 1;
+}
+main() {
+    printf("Enter String : ");
+    yylex();
+    printf("keywords %d\n", keywords);
+    printf("operators %d\n", operators);
+    printf("special %d\n", special);
+    printf("digits %d\n", digits);
+    printf("identifier %d\n", identifier);
+}
