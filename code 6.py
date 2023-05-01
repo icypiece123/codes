@@ -88,3 +88,9 @@ code = open("code.txt").readlines()
 for line in code[:]:
     parseLine(line)
 
+-----------------code.txt-------------------------
+t=b+c
+v=d+e
+u=t-v
+w = t+u
+a=w
