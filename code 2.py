@@ -33,3 +33,12 @@ for token in tokens:
     else :
         print(token,"is identifier")
 
+        
+        
+-------------------input.txt------------------
+int a ;
+float b = 10.2 ;
+char ch = 'z' ;
+char d = "strings" ;
+int d = a * b ;
+$name ;
