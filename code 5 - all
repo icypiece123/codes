@@ -1,0 +1,123 @@
+--------------1st vowels --------------------
+%{
+   #include<stdio.h>
+   int vowels=0;
+   int cons=0;
+%}
+%%
+[aeiouAEIOU] {vowels++;}
+[a-zA-Z] {cons++;}
+%%
+int yywrap()
+{
+    return 1;
+}
+main()
+{
+    printf("enter the string..at end press^d\n");
+    yylex();
+    printf("no of vowels=%d\n No of consonants=%d\n",vowels,cons);
+}
+
+---------------------------------2nd number of positive and negative integers and fractions --------------------------------------
+
+%{
+   #include<stdio.h>
+   int posint=0, negint=0, posfraction=0, negfraction=0;
+%}
+%%
+[-][0-9]+ {negint++;}
+[+]?[0-9]+ {posint++;}
+[+]?[0-9]*\.[0-9]+ {posfraction++;}
+[-][0-9]*\.[0-9]+ {negfraction++;}
+%%
+int yywrap()
+{
+  return 1;
+}
+
+main(int argc, char *argv[])
+{
+    yyin=fopen(argv[1],"r");
+    yylex();
+    printf("NO of +ve integers=%d\n No of -ve integers+%d\n NO of +ve fractions=%d\n No of -ve fractions=%d\n", posint,negint,posfraction, negfraction);
+    }
+    
+    
+ --------------------------------3rd number of operators and operand --------------------------------------
+ 
+ %{
+#include<stdio.h>
+int opr=0,opd=0;
+int n;
+%}
+
+%%
+[\+\-\*\/] {printf("Operators are %s\n",yytext);opr++;}
+[a-zA-Z]+ {printf("Operands are %s\n",yytext);opd++;}
+[0-9]+ {printf("Operands are %s\n",yytext);
+opd++;
+}
+[a-zA-Z]+\+\-\*\/[a-zA-Z]+ {n=0;}
+[0-9]+\+\-\*\/[0-9]+ {n=0;}
+%%
+
+int yywrap()
+{
+return 1;
+}
+
+main()
+{
+printf("\n Enter the expression\n");
+yylex();
+printf("\n OPerators are %d",opr);
+printf("\n OPerators are %d%d",opd,n);
+if((n==0) && (opd == opr+1))
+printf("\nvalid expresion\n");
+else
+printf("\nInvalid Expression\n");
+}
+
+-------4th  count char, words, spaces, end of line --------------------------------------------------------------
+
+%{
+ #include<stdio.h>
+ int c=0, w=0, s=0, l=0;
+%}
+WORD [^ \t\n,\.:]+
+EOL [\n]
+BLANK [ ]
+%%
+{WORD} {w++; c=c+yyleng;}
+{BLANK} {s++;}
+{EOL} {l++;}
+. {c++;}
+%%
+int yywrap()
+{
+return 1;
+}
+main(int argc, char *argv[])
+{
+        yyin=fopen(argv[1],"r");
+        yylex();
+        printf("No of characters=%d\nNo of words=%d\nNo of sspaces=%d\n No of lines=%d",c,w,s,l);
+}
+
+------------------------5th  count identifier, keywords, operators, special symbols, digits------------------------------
+%{
+#include<stdio.h>
+int operator=0;
+int identifier=0;
+int special=0;
+int digit=0;
+int key=0;
+%}
+%%
+int|char|float|if|else|switch {key++;}
+[a-zA-Z] {identifier++;}
+[\+\-\*\=] {operator++;}
+[0-9] {digit++;}
+[\;\$\_\&\!] {special++;}
+%%
