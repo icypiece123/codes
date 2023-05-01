@@ -1,71 +1,84 @@
-#!/usr/bin/env python
-# coding: utf-8
+import pandas as pd
+from random import randint
 
-# In[ ]:
+table = []
+operators = "+=-*/%"
+special_symbols = ",()&$@!;"
+addresses = {}
 
+def distinguish_token(token):
+    if token in operators:
+        return 'operators'
+    if token in special_symbols:
+        return 'special_symbol'
+    return 'identifier'
 
-from random import random 
-class Symboltable:
-    def __init__(self,expression):
-        self.expression = expression 
-        self.table = []
-    def insertsymboltable(self,newsymbol):
-            row = [] 
-            if newsymbol.isalpha():
-                row.append(newsymbol)
-                row.append("identifier") 
-            else:
-                row.append(newsymbol)
-                row.append("operator")
-                row.append(random()*10**8)
-                self.table.append(row)
-    def removesymbol(self,out_symbol): 
-        for i in self.table:
-            if out_symbol == i[0]:
-                self.table.remove(i)
-                self.tablebuilder()
-    def searchsymbol(self,key_symbol): 
-        for i in self.table:
-            if key_symbol == i[0]:
-                print("{} \t {} \t {:.0f}".format(i[0],i[1],i[2]))
-    def createsymboltable(self):
-        temp_row = [i for i in self.expression.split(' ')] 
-        for i in temp_row:
-            self.insertsymboltable(i)
-    def tablebuilder(self): 
-        print("Symbol \t Type \t\t Location") 
-        for i in self.table:
-            print("{} \t {} \t {:.0f}".format(i[0],i[1],i[2]))
-tablelist = [] 
-while True:
-    x = int(input("Choose the operation to be performed\n\t 1:Create Symbol Table \n\t 2:Add Elements to the table \n\t 3:Remove elements from the table \n\t 4:Search for elements from the table \n\t 5:Diplay specific table \n\t 6:Display all tables \n\t Press anything else to exit \n")) 
-    if x == 1: 
-        expression = input("Enter expression split acording to space\n")
-        a = Symboltable(expression)
-        a.createsymboltable() 
-        tablelist.append(a)
-        for i in range(len(tablelist)): 
-            print("Table Id = ",i) 
-            tablelist[i].tablebuilder()
-    elif x == 2:
-        table_id = int(input("Enter the Table id of the table on which operation is to be performed\n"))
-        tablelist[table_id].insertsymboltable(input("Enter the symbol to be added\n"))
-        tablelist[table_id].tablebuilder()
-    elif x == 3:
-        table_id = int(input("Enter the Table id of the table on which operation is to be performed\n")) 
-        tablelist[table_id].removesymbol(input("Enter the symbol to be removed\n"))
-    elif x == 4:
-        table_id = int(input("Enter the Table id of the table on which operation is to be performed\n")) 
-        tablelist[table_id].searchsymbol(input("Enter input to be searched")) 
-        tablelist[table_id].tablebuilder()
-    elif x == 5:
-        table_id = int(input("Enter the Table id of the table on which operation is to be performed\n")) 
-        tablelist[table_id].tablebuilder()
-    elif x == 6:
-        i=0 
-        for j in tablelist:
-            tablelist[i].tablebuilder() 
-            i=i+1 
-    else:
-        break
+def create_table(exp):
+    global address
+
+    tokens = [*exp]
+    for token in tokens:
+        enter_symbol(token)
+
+def generate_random():
+    while True:
+        i = randint(1000, 10000)
+        if i not in addresses.values():
+            return i
+
+def get_address(token):
+    if token not in addresses.keys():
+        addresses[token] = generate_random()
+
+    return addresses[token]
+
+def enter_symbol(token):
+    table.append({
+        'Symbol': token,
+        'Address': get_address(token),
+        'Type': distinguish_token(token)
+    })
+
+def remove_symbol(token):
+    global table
+    table = filter(
+        lambda row: False if row['Symbol'] == token else True, table)
+
+def search_table(token):
+    result = filter(
+        lambda row: True if row['Symbol'] == token else False, table)
+    return result
+
+def create_menu():
+    while True:
+        option = int(input(
+            "\n1. Create table \n2. Search table \n3. Enter Symbol \n4. Remove symbol \n5. View table \n6. Exit\n# Enter your choice : "))
+        if option == 6:  # Exit
+            break
+        elif option == 1:  # Create Table
+            expText = input("# Enter Expression: ")
+            create_table(expText)
+        elif option == 2:  # Search table
+            token = input("# Enter Search Table Name: ")
+            print(pd.DataFrame(search_table(token)))
+        elif option == 3:  # Enter Symbol
+            token = input("# Enter Symbol Add: ")
+            enter_symbol(token)
+        elif option == 4:  # Remove Symbol
+            token = input("# Enter Symbol to remover: ")
+            remove_symbol(token)
+        elif option == 5:  # View Table
+            print(pd.DataFrame(table))
+        else:
+            print("Wrong Option")
+
+if __name__ == "__main__":
+    # create_table("D=A+B*C")
+    # print(pd.DataFrame(table))
+    # enter_symbol('E')
+    # remove_symbol('D')
+    # print(pd.DataFrame(table))
+
+    create_menu()
+
 
